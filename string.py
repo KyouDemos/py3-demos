@@ -9,6 +9,9 @@ print('s[1:]:  ', s[1:])  # 序列分片（右边界默认值为s的长度）
 
 # 字符串重复
 print('s*4:    ', s * 4)  # 字符串乘法表示字符串重复
+print('root', 'x', '0', '0', sep=':')  # 指定分隔符
+print("','.join(s):", ','.join(s))  # 字符串拼接
+print("','.join([x*2 for x in s]):", ','.join([x * 2 for x in s]))  # 数组拼接
 
 # 字符串函数
 s = 'abcdbcebc'
@@ -41,7 +44,6 @@ print(r"(' \n \t' + s + '\t').strip():", (' \n \t' + s + '\t').strip())
 # %X -- 十六进制整数(字母大写)
 # %% -- %
 
-print('root', 'x', '0', '0', sep=':')  # 指定分隔符
 print('%s and %s is word' % ('a', 'b'))
 print('%(aa)s and %(bb)s is word' % {'aa': 'AA', 'bb': 'BB'})  # 注意匹配内容是花括号包围的
 
