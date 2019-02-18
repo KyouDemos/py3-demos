@@ -23,10 +23,13 @@ lst.pop()  # 默认删除末尾元素
 print('lst.pop():', lst)
 lst.pop(1)  # 删除指定坐标的元素
 print('lst.pop(1):', lst)
-lst0.sort()  # 将序列中的元素正序排列
-print('lst0.sort():', lst0)
-lst0.reverse()  # 将序列中的元素倒叙排列
-print('lst0.reverse():', lst0)
+l = ['abc', 'ABD', 'aBe']
+l.sort()  # 序列排序
+print('l.sort():', l)
+l.sort(key=str.lower)  # 将字母转小写后排序
+print('l.sort(key=str.lower):', l)
+l.reverse()  # 倒叙排列
+print('l.reverse():', l)
 
 # 多维序列
 lst.append(lst0)
