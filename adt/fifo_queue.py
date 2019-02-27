@@ -1,3 +1,6 @@
+import copy
+
+
 class FifoQueue:
     """先进先出、定长队列"""
 
@@ -10,7 +13,7 @@ class FifoQueue:
         self.size = size
 
     def add(self, item):
-        self._queue.append(item)
+        self._queue.append(copy.deepcopy(item))
         if len(self._queue) > self.size:
             self._head += 1
 
@@ -24,3 +27,6 @@ class FifoQueue:
 
     def __contains__(self, item):
         return item in self._queue[self._head:]
+
+    def getQueue(self):
+        return self._queue

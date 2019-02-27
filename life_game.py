@@ -34,16 +34,9 @@ class LifeGrid:
     def __init__(self, rowCnt=5, colCnt=5):
         """随机初始化网格"""
 
-        self._grid = []
+        self._grid = [[random.randint(0, 1) for c in range(colCnt)] for r in range(rowCnt)]
+        self._gridNew = [[-1] * colCnt for i in range(rowCnt)]
         self._history = FifoQueue(100)
-
-        for x in range(rowCnt):
-            r = []
-            for y in range(colCnt):
-                r.append(random.randint(0, 1))
-            self._grid.append(r)
-
-        self._gridNew = copy.deepcopy(self._grid)
 
     def updateCell(self, r, c):
         nbr = [self._grid[r + x][c + y] for x in (-1, 0, 1) for y in (-1, 0, 1) if
@@ -51,11 +44,11 @@ class LifeGrid:
         self._gridNew[r][c] = LifeGrid.RULE_DICT.get(sum(nbr))
 
     def updateGrid(self):
+        self._history.add(self._gridNew)
+
         for r in range(len(self._grid)):
             for c in range(len(self._grid[r])):
                 self.updateCell(r, c)
-
-        self._history.add(self._grid)
 
         self._grid = copy.deepcopy(self._gridNew)
         self.showGrid()
@@ -64,7 +57,7 @@ class LifeGrid:
         return sum(map(sum, self._grid)) > 0
 
     def isGridBalance(self):
-        return False if self._history.size == 1 else self._grid in self._history  # 此处不完美
+        return self._grid in self._history
 
     def showGrid(self):
         for x in range(len(self._grid)):
