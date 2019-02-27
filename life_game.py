@@ -2,6 +2,8 @@ import copy
 import random
 import time
 
+from adt.fifo_queue import FifoQueue
+
 """
 The game of Life 是由英国数学家 John H. Conway 发明的，它能模拟生物群落的兴衰更替。该游戏可用来观察一个复杂的系统或模式如何能从一组简单的规则演化而来。
 
@@ -14,13 +16,6 @@ The game of Life 是由英国数学家 John H. Conway 发明的，它能模拟�
 一个死单元格，当且仅当只有 3 个活邻居时，会在下一代重生。
 用户先初始化配置，即指定哪些单元格是活的，然后运用以上的规则，生成下一代。可以看到，一些系统可能最终会消亡，而有些最终会进化成 “稳定” 状态。
 """
-
-
-def showGrid(grid):
-    for x in range(len(grid)):
-        for y in range(len(grid[x])):
-            print(LifeGrid.DEAD_CELL, end='') if grid[x][y] == 0 else print(LifeGrid.LIVE_CELL, end='')
-        print('')
 
 
 class LifeGrid:
@@ -39,21 +34,16 @@ class LifeGrid:
     def __init__(self, rowCnt=5, colCnt=5):
         """随机初始化网格"""
 
-        r = []
         self._grid = []
+        self._history = FifoQueue(100)
+
         for x in range(rowCnt):
+            r = []
             for y in range(colCnt):
-                if random.randint(0, 1) == 1:
-                    r.append(1)
-                else:
-                    r.append(0)
-            self._grid.append(r.copy())
-            r.clear()
+                r.append(random.randint(0, 1))
+            self._grid.append(r)
 
         self._gridNew = copy.deepcopy(self._grid)
-
-    def isCellLive(self, x, y):
-        return self._grid[x][y] == 1
 
     def updateCell(self, r, c):
         nbr = [self._grid[r + x][c + y] for x in (-1, 0, 1) for y in (-1, 0, 1) if
@@ -64,23 +54,31 @@ class LifeGrid:
         for r in range(len(self._grid)):
             for c in range(len(self._grid[r])):
                 self.updateCell(r, c)
-        self._isLiveForEver = self._grid == self._gridNew
+
+        self._history.add(self._grid)
+
         self._grid = copy.deepcopy(self._gridNew)
-        return self._grid
+        self.showGrid()
 
     def isGridLive(self):
         return sum(map(sum, self._grid)) > 0
 
     def isGridBalance(self):
-        return self._isLiveForEver
+        return False if self._history.size == 1 else self._grid in self._history  # 此处不完美
+
+    def showGrid(self):
+        for x in range(len(self._grid)):
+            for y in range(len(self._grid[x])):
+                print(LifeGrid.DEAD_CELL, end='') if self._grid[x][y] == 0 else print(LifeGrid.LIVE_CELL, end='')
+            print()
+        print()
 
 
-g = LifeGrid()
+g = LifeGrid(6, 6)
 
 while True:
-    showGrid(g.updateGrid())
-    time.sleep(0.5)
-    print('')
+    g.updateGrid()
+    time.sleep(0.1)
 
     if not g.isGridLive():
         print('grid dead!')
