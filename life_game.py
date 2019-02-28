@@ -34,26 +34,43 @@ class LifeGrid:
     def __init__(self, rowCnt=5, colCnt=5):
         """随机初始化网格"""
 
+        # 使用随机值初始化二维数组
         self._grid = [[random.randint(0, 1) for c in range(colCnt)] for r in range(rowCnt)]
+
+        # 使用-1，初始化二维数组
         self._gridNew = [[-1] * colCnt for i in range(rowCnt)]
-        self._history = FifoQueue(100)
+
+        # 使用固定长度的先进先出队列保留历史状态，用于分析生命网格是否存现平衡（循环的稳定状态）
+        self._history = FifoQueue(20)
 
     def updateCell(self, r, c):
+
+        # 当前单元格及其所有邻居
         nbr = [self._grid[r + x][c + y] for x in (-1, 0, 1) for y in (-1, 0, 1) if
                -1 < r + x < len(self._grid) and -1 < c + y < len(self._grid[x])]
+
+        # 根据当前单元格及其所有邻居的总人口，推算当前单元格的生存状态
         self._gridNew[r][c] = LifeGrid.RULE_DICT.get(sum(nbr))
 
     def updateGrid(self):
+
+        # 保存网格历史状态，以便分析生命网格是否存现平衡（循环的稳定状态）
         self._history.add(self._gridNew)
 
+        # 逐个推算当前单元格的生存状态
         for r in range(len(self._grid)):
             for c in range(len(self._grid[r])):
                 self.updateCell(r, c)
 
+        # 将推算结果更新到网格
         self._grid = copy.deepcopy(self._gridNew)
+
+        # 打印网格
         self.showGrid()
 
     def isGridLive(self):
+
+        # 计算二维数组的和
         return sum(map(sum, self._grid)) > 0
 
     def isGridBalance(self):
