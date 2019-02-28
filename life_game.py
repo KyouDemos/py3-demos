@@ -5,6 +5,7 @@ import copy
 import os
 import random
 import subprocess
+import sys
 
 LIVE_CELL = '⬛'
 DEAD_CELL = '⬜'
@@ -78,6 +79,7 @@ def peripheryExpand(grid, val=None, maxRow=100, maxCol=100):
     return grid
 
 
+# noinspection PyUnresolvedReferences
 def letsDoIt():
     print('''
     按照如下格式输入参数
@@ -90,7 +92,12 @@ def letsDoIt():
     ''')
 
     while True:
-        inputs = input("请输入指令:").strip()
+        if sys.version > '3':
+            # python 3
+            inputs = input("请输入指令: ").strip()
+        else:
+            # 兼容python 2
+            inputs = raw_input("请输入指令: ").strip()
 
         if inputs == 'note':
             showNote()
