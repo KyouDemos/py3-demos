@@ -3,24 +3,8 @@ from __future__ import print_function
 
 import copy
 
-LIVE_CELL = '⬛'
-DEAD_CELL = '⬜'
 
-
-def showGrid(grid, islife=False):
-    f = open('output.txt', 'a+')
-    for x in range(len(grid)):
-        for y in range(len(grid[x])):
-            if islife:
-                c = LIVE_CELL if grid[x][y] else DEAD_CELL
-            else:
-                c = str(grid[x][y])
-            print(c, end='', file=f)
-        print(file=f)
-    print(file=f)
-    f.close()
-
-
+# TODO 只能扩展，不能收缩，不完美。
 def peripheryExpand(grid, val=None, maxRow=100, maxCol=100):
     """保证网格四周的行列的值全部为0"""
 
